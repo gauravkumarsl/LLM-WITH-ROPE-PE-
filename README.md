@@ -1,7 +1,11 @@
 RoPE-Transformer LLM Training
+
+
 A compact transformer language model trained from scratch using RoPE (Rotary Position Embeddings) on WikiText-103 dataset. Built with PyTorch.
 
 Model Architecture
+
+
 Parameter	Value	Description
 embedding_dim	256	Token embedding size
 ff_dim	1024	Feed-forward dimension (4× embedding)
@@ -18,13 +22,19 @@ Samples: 50K shuffled rows for efficient training
 Task: Causal language modeling
 
 RoPE: Rotary Position Embeddings
+
+
 Traditional Positional Encoding Limitations
 text
 Standard approach: x_pos = x_token + PE(position)
 Problems:
-├── Absolute position dependency
-├── Extrapolation failure beyond training lengths
-└── Fixed position bias
+
+Absolute position dependency
+
+Extrapolation failure beyond training lengths
+
+Fixed position bias
+
 RoPE Core Innovation
 RoPE transforms positional information into rotation matrices applied directly to query/key vectors:
 
@@ -38,6 +48,8 @@ R(θ) = [[cosθ, -sinθ],
 Key Mathematical Property:
 
 text
+
+
 Q_mᵀK_n = f(m-n)  # Relative position only!
 No absolute position dependency
 Implementation Process
@@ -50,6 +62,7 @@ text
 Shape transformations:
 
 text
+
 Q ∈ ℝᴮᴴᵀᴰ → Split → [ℝᴮᴴᵀᴰᐟ² × 2] → Rotate → ℝᴮᴴᵀᴰ
           ↑
     Apply identical θ to both dimensions of each pair
@@ -61,6 +74,8 @@ Input Tokens → Embedding → [TransformerBlock × 6] → LM Head
 Single TransformerBlock:
 
 text
+
+
 Input → LayerNorm → RoPE-MultiHeadAttention → Residual
         ↓
      LayerNorm → FeedForward(256→1024→256) → Residual
@@ -74,6 +89,8 @@ Data Efficiency: No positional embedding parameters
 Stability: Bounded rotation matrices prevent exploding gradients
 
 📈 Training Dynamics
+
+
 Loss Progression (expected):
 
 text
@@ -83,6 +100,8 @@ Epoch 10: Perplexity ~30 (reasonable for 8M model)
 Optimization: Causal language modeling with cross-entropy loss on next-token prediction.
 
 💾 Model Persistence
+
+
 State Dictionary Format:
 
 text
